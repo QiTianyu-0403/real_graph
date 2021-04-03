@@ -1,4 +1,3 @@
-
 import torch, argparse
 import os.path as osp
 import torch_geometric.datasets as geo_data
@@ -7,11 +6,6 @@ import torch_geometric.transforms as T
 import numpy as np
 import random
 import scipy.sparse as sp
-import networkx as nx
-
-from models import data_to_G,SBM,p_random,p_random_simple,zipf,DCSBM,get_weight
-from draw import draw_degree,draw,draw_data_x,draw_degree_fit_power,\
-                    draw_degree_fit_line,draw_old,get_ave_degree,draw_network
 
 
 def setup_seed(seed):
@@ -26,8 +20,8 @@ def get_parse():
     # parser for hyperparameters
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--data', type=str, default='arxiv',
-                        help='{cora, pubmed, citeseer, arxiv}.')
+    parser.add_argument('--data', type=str, default='cora',
+                        help='{cora, pubmed, citeseer, ogbn-arxiv ,ogbn-proteins}.')
     return parser
 
 def normalize_adj_row(adj):
@@ -37,7 +31,7 @@ def normalize_adj_row(adj):
     r_inv[np.isinf(r_inv)] = 0.
     r_mat_inv = sp.diags(r_inv)
     mx = r_mat_inv.dot(adj)
-    return mx,rowsum
+    return mx,rowsum-1
 
 
 
@@ -91,7 +85,7 @@ def build_data(args):
     return data, n_feat, n_class,degree
 
 def build_OGB_data(args):
-    dataset = PygNodePropPredDataset(name='ogbn-arxiv', root='./datasets/')
+    dataset = PygNodePropPredDataset(name=args.data, root='./datasets/')
     print(dataset)
     data = dataset[0]
     n = len(data.x)
@@ -103,49 +97,16 @@ def build_OGB_data(args):
     n_feat = data.x.size(1)
     return data, n_feat, n_class,degree
 
-
-if __name__ == '__main__':
+def init():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     parser = get_parse()
     args = parser.parse_args()
 
-    if args.data == 'arxiv':
+    if args.data == 'ogbn-arxiv' or args.data == 'ogbn-proteins':
         data, n_feat, n_class ,degree = build_OGB_data(args)
         data = data.to(device)
     else:
         data, n_feat, n_class ,degree = build_data(args)
         data = data.to(device)
-    print(data.edge_index)
-    G=data_to_G(data)
-    #draw_old(G)
-    draw_degree_fit_line(G)
 
-    '''
-    power=[]
-    for i in range(1,10001):
-        power.append(zipf(i,450,1.3))
-
-    random.shuffle(power)
-    G=DCSBM(sizes=[500,500], p=p_random_simple(2), theta=power, sparse=True)
-    draw_degree_fit_power(G)
-    '''
-
-    '''
-    #get_weight(data)
-    p=p_random_simple(2)
-    pin=p[0][0]
-    pout=p[0][1]
-    get_weight(degree, pin, pout)
-    G2 = DCSBM(sizes=[9858, 9859], p=p, theta=get_weight(degree,pin,pout), sparse=True)
-    #G2=SBM(sizes=[1354, 1354], p=p, nodelist=None, seed=None, directed=False, selfloops=False, sparse=True)
-    get_ave_deree(G2)
-    draw_degree_fit_line(G2)
-    '''
-
-
-    #get_ave_degree(G)
-
-    print('hello')
-
-
-
+    return data,degree

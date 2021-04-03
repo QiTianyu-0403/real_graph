@@ -1,11 +1,7 @@
-
-import random
-
 import networkx as nx
 import itertools
 import math
 from networkx.utils import py_random_state
-
 
 def data_to_G(data):
     G=nx.Graph()
@@ -30,43 +26,6 @@ def data_to_G(data):
     #print(edges)
     G.add_edges_from(edges)
     return G
-
-
-
-# Generate the block probability matrix
-def p_random(block):
-    p = []
-    for i in range(block):
-        p.append([])
-        for j in range(block):
-            if i == j:
-                p[i].append(random.uniform(0.2, 0.4))
-            elif i < j:
-                p[i].append(random.uniform(0.02, 0.1))
-            else:
-                p[i].append(p[j][i])
-    return p
-
-
-# Generate the block probability matrix (Value of pin and pout is the only)
-def p_random_simple(block):
-    p = []
-    pin=random.uniform(0.2, 0.3)
-    pout=random.uniform(0.05, 0.1)
-    print('pin---:%f' % pin)
-    print('pout---:%f' % pout)
-    for i in range(block):
-        p.append([])
-        for j in range(block):
-            if i == j:
-                p[i].append(pin)
-            else:
-                p[i].append(pout)
-    return p
-
-# generate the Zipf function
-def zipf(r,C,alpha):
-    return C*r**(-alpha)
 
 
 # generate SBM
@@ -159,33 +118,6 @@ def SBM(sizes, p, nodelist=None, seed=None, directed=False, selfloops=False, spa
     return g
 
 
-def get_weight(degree,pin,pout):
-    normal=1
-    weight=[]
-    print(len(degree))
-    for i in degree:
-        weight.append(i[0]/140)
-    random.shuffle(weight)
-    print(weight)
-    test = random.sample(weight, 2)
-    ave_degree = 0.25 * (test[0] * pin + test[1] * pout) * len(degree)
-    print('ave_degree:%f' % ave_degree)
-    '''
-    for ran in range(0,20):
-        test = random.sample(weight,2)
-        ave_degree=0.25*(test[0]*pin+test[1]*pout)*len(degree)
-        print('ave_degree:%f' % ave_degree)
-        if ave_degree>5 or ave_degree<2:
-            normal+=10
-            for i in degree:
-                weight.append(i[0]/normal)
-            random.shuffle(weight)
-            print('normal:%d'%normal)
-        else:
-            break
-    '''
-    return weight
-
 # generate DCSBM
 @py_random_state(4)
 def DCSBM(sizes, p, theta, nodelist=None, seed=None, directed=False, selfloops=False, sparse=True):
@@ -238,7 +170,6 @@ def DCSBM(sizes, p, theta, nodelist=None, seed=None, directed=False, selfloops=F
 
     # Test for edge existence
     parts = g.graph["partition"]
-    print(parts[0])
     for i, j in block_iter:
         if i == j:
             if directed:

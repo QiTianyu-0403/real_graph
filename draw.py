@@ -5,7 +5,6 @@ import collections
 from matplotlib.pyplot import MultipleLocator
 import networkx as nx
 import numpy as np
-from sklearn import linear_model
 import math
 from scipy.optimize import curve_fit
 
@@ -21,7 +20,7 @@ def draw_old(G):
     plt.title("value Histogram")
     plt.ylabel("Count")
     plt.xlabel("value")
-    ax.set_xticks([d + 0.4 for d in deg])
+    ax.set_xticks([d for d in deg])
     ax.set_xticklabels(deg)
 
     plt.show()
@@ -209,6 +208,9 @@ def get_ave_degree(G):
     print('the average degree:%f'%degree_average)
     return degree_average
 
+def get_data_ave_degree(degree):
+    a = degree.tolist()
+    print('the average degree of real graph:%f'%np.mean(a))
 
 def draw_network(G):
     nx.draw(G, pos=nx.layout.spring_layout(G), node_color='b', edge_color='#000000',width=0.3,style='solid', with_labels=True, font_size=1, node_size=10)
