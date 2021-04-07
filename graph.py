@@ -110,3 +110,5 @@ def init():
         data = data.to(device)
 
     return data,degree
+
+

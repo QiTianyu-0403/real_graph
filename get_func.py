@@ -1,5 +1,7 @@
 import random
-import math
+
+import collections
+import numpy as np
 
 
 # Generate the block probability matrix
@@ -39,12 +41,12 @@ def zipf(r,C,alpha):
     return C*r**(-alpha)
 
 
-def get_weight(degree):
+def get_weight(degree,x):
     weight=[]
     for i in degree:
-        weight.append(i[0]/50)
+        weight.append(i[0]/x)
     random.shuffle(weight)
-    print(weight)
+    #print(weight)
 
     #ave_degree = 0.25 * (test[0] * pin + test[1] * pout) * len(degree)
     #print('ave_degree:%f' % ave_degree)
@@ -105,4 +107,23 @@ def statistic_edges(data):
     print(edges_num)
     return edges_num,dict
 
+
+'''#get the average degree'''
+def get_ave_degree(G):
+    degree_sequence = sorted([d for n, d in G.degree()], reverse=True)
+    degreeCount = collections.Counter(degree_sequence)
+    deg, cnt = zip(*degreeCount.items())
+
+    degree_sum = 0
+    for node in range(0,len(deg)):
+        degree_sum = deg[node] * cnt[node] + degree_sum
+    degree_average = degree_sum / len(degree_sequence)
+    #print('the average degree:%f'%degree_average)
+    return degree_average
+
+def get_data_ave_degree(degree):
+    a = degree.tolist()
+    degree_ave = np.mean(a)
+    print('the average degree of real graph:%f'%degree_ave)
+    return degree_ave
 

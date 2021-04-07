@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import collections
 from matplotlib.pyplot import MultipleLocator
 import networkx as nx
-import numpy as np
 import math
 from scipy.optimize import curve_fit
 
@@ -195,22 +194,6 @@ def draw_degree_fit_line(G):
     plt.show()
 
 
-'''#get the average degree'''
-def get_ave_degree(G):
-    degree_sequence = sorted([d for n, d in G.degree()], reverse=True)
-    degreeCount = collections.Counter(degree_sequence)
-    deg, cnt = zip(*degreeCount.items())
-
-    degree_sum = 0
-    for node in range(0,len(deg)):
-        degree_sum = deg[node] * cnt[node] + degree_sum
-    degree_average = degree_sum / len(degree_sequence)
-    print('the average degree:%f'%degree_average)
-    return degree_average
-
-def get_data_ave_degree(degree):
-    a = degree.tolist()
-    print('the average degree of real graph:%f'%np.mean(a))
 
 def draw_network(G):
     nx.draw(G, pos=nx.layout.spring_layout(G), node_color='b', edge_color='#000000',width=0.3,style='solid', with_labels=True, font_size=1, node_size=10)

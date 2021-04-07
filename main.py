@@ -1,18 +1,23 @@
-from models import data_to_G,SBM,DCSBM
-from get_func import p_random,p_random_simple,zipf,get_weight,statistic_nodes,statistic_edges
-from draw import draw_degree,draw,draw_data_x,draw_degree_fit_power,\
-                    draw_degree_fit_line,draw_old,get_ave_degree,draw_network,get_data_ave_degree
+from models import data_to_G, SBM, DCSBM
+from get_func import p_random, p_random_simple, zipf, get_weight, statistic_nodes, statistic_edges,\
+                    get_ave_degree, get_data_ave_degree
+from draw import draw_degree, draw, draw_data_x, draw_degree_fit_power,\
+                    draw_degree_fit_line, draw_old, draw_network
 from graph import init
+from genetic import genetic_func
 
 if __name__ == '__main__':
-    data,degree = init()
+    data, degree = init()
 
+    real_degree = get_data_ave_degree(degree)
     #P,dict = statistic_edges(data)
     #G2 = DCSBM(sizes=[dict[0], dict[1],dict[2],dict[3],dict[4],dict[5],dict[6]], p=P, theta=get_weight(degree), sparse=True)
     #G2 = SBM(sizes=[dict[0], dict[1],dict[2],dict[3],dict[4],dict[5],dict[6]], p=P, nodelist=None, seed=None, directed=False, selfloops=False, sparse=True)
     #G=data_to_G(data)
     #draw_old(G2)
     #draw_degree_fit_line(G)
+
+
 
     '''
     *******   Generate DCSBM from random sequence   ************
@@ -27,8 +32,11 @@ if __name__ == '__main__':
     draw_degree_fit_power(G)
     '''
 
+
+
     '''
     *******   Generate DCSBM according to the real graph distribution  ************
+    '''
     '''
     get_data_ave_degree(degree)
     p=p_random_simple(2)
@@ -38,5 +46,10 @@ if __name__ == '__main__':
     #G2.remove_nodes_from(e)
     get_ave_degree(G2)
     draw_old(G2)
+    '''
+    #pid_degree()
+    p = p_random_simple(2)
+    size = [1354, 1354]
+    genetic_func(degree, p, size, real_degree)
 
     print('hello')
