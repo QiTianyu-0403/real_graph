@@ -2,6 +2,7 @@ import networkx as nx
 import itertools
 import math
 from networkx.utils import py_random_state
+import random
 
 def data_to_G(data):
     G=nx.Graph()
@@ -209,4 +210,17 @@ def DCSBM(sizes, p, theta, nodelist=None, seed=None, directed=False, selfloops=F
                 g.add_edge(*e)  # __safe
 
     return g
+
+
+def power_law(N):
+    sum = 0
+    power = []
+    for i in range(N):
+        power.append(1/(i+1))
+        sum += 1/(1+i)
+    for i in range(N):
+        power[i] /= sum
+    print(power)
+    random.shuffle(power)
+    return power
 

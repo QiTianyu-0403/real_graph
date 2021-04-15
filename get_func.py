@@ -22,8 +22,8 @@ def p_random(block):
 # Generate the block probability matrix (Value of pin and pout is the only)
 def p_random_simple(block):
     p = []
-    pin=random.uniform(0.2, 0.3)
-    pout=random.uniform(0.05, 0.1)
+    pin=random.uniform(0.3, 0.4)
+    pout=random.uniform(0.02, 0.1)
     print('pin---:%f' % pin)
     print('pout---:%f' % pout)
     for i in range(block):
@@ -118,12 +118,12 @@ def get_ave_degree(G):
     for node in range(0,len(deg)):
         degree_sum = deg[node] * cnt[node] + degree_sum
     degree_average = degree_sum / len(degree_sequence)
-    #print('the average degree:%f'%degree_average)
+    #print('the average degree (c):%f'%degree_average)
     return degree_average
 
 def get_data_ave_degree(degree):
     a = degree.tolist()
     degree_ave = np.mean(a)
-    print('the average degree of real graph:%f'%degree_ave)
+    #print('the average degree of real graph:%f'%degree_ave)
     return degree_ave
 

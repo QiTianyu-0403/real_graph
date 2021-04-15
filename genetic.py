@@ -82,11 +82,13 @@ def best(pop, fit_value):
     px = len(pop)
     best_individual = []
     best_fit = fit_value[0]
+    best_num = 0
     for i in range(1, px):
         if fit_value[i] > best_fit:
             best_fit = fit_value[i]
             best_individual = pop[i]
-    return [best_individual, best_fit]
+            best_num = i
+    return [best_num, best_individual, best_fit]
 
 
 # sum
@@ -264,11 +266,31 @@ def test_border(degree, p, size, real_degree):
     print('min_value = ', left, 'max_value = ', right)
     return left, right
 
+#draw the plt
+def draw(X, splashes, best_obj, goal):
+    for i in range(len(splashes[0])):
+        d = []
+        for j in range(len(splashes)):
+            d.append(splashes[j][i])
+        plt.scatter(X, d, alpha=0.5, s=50, c="y", marker='x')
+
+    plt.plot(X, best_obj, 'r', marker='*', label="Degree distribution probability")
+    plt.plot(X, goal, 'b', label="Degree distribution probability")
+
+    plt.title("Iterative process of genetic algorithm", fontsize='xx-large')
+    plt.xlabel("Iteration")
+    plt.ylabel("Average degree")
+    #plt.legend()
+
+    plt.show()
+
+
+
 
 # main
 def genetic_func(degree, p, size, real_degree):
     pop_size = 25  # population size
-    stop_generation = 10  # Termination of algebra
+    stop_generation = 6  # Termination of algebra
     chrom_length = 10  # Chromosome length
     pc = 0.6  # crossover probability
     pm = 0.001  # mutation probability
@@ -282,16 +304,26 @@ def genetic_func(degree, p, size, real_degree):
 
     c_min = get_c_min(min_value, max_value, degree, p, size, real_degree)
     print('c_min:',c_min)
+    splashes = []
+    best_obj = []
 
 
     for i in range(stop_generation):
+        last_fit = 0
         print('run-time:', i, '-----------------------')
 
         obj_value = calobjValue(pop, chrom_length, min_value, max_value, degree, p, size)
         print('degree_value:',obj_value)
+        splashes.append(obj_value)
         fit_value = calfitValue(obj_value, c_min, real_degree)
-        best_individual, best_fit = best(pop, fit_value)
+        best_num, best_individual, best_fit = best(pop, fit_value)
         print('best_fit:', best_fit)
+        print('best_num:', best_num)
+        if last_fit > best_fit:
+            fit_value[best_num] = last_fit
+        else:
+            last_fit = best_fit
+        best_obj.append(obj_value[best_num])
         results.append([best_fit, b2d(best_individual, min_value, max_value,
                                       chrom_length)])
         selection(pop, fit_value)
@@ -302,11 +334,13 @@ def genetic_func(degree, p, size, real_degree):
     # results.sort()
 
     X = []
-    Y = []
+    goal = []
     for i in range(stop_generation):
-        X.append(i)
-        Y.append(-results[i][0] + c_min)
-    print('Y:',Y)
+        X.append(i+1)
+        goal.append(real_degree)
+        #Y.append(-results[i][0] + c_min)
+    #print('Y:',Y)
+    draw(X, splashes, best_obj, goal)
     '''
     plt.plot(X, Y)
     plt.show()
