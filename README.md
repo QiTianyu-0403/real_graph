@@ -1,2 +1,2 @@
 # real_graph
-Create SBM/DCSBM and test real graph, draw the degree
+Create SBM/DCSBM and test real graph, and draw the degree.
